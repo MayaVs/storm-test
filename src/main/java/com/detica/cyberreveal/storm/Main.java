@@ -43,6 +43,7 @@ public final class Main {
 		BookTopology topology = new BookTopology(topologyName,
 				"src/main/resources/AdventuresOfSherlockHolmes.txt", new File(
 						"target/wordCounts.out"));
-		topology.run();
+			topology.run();
+
 	}
 }

@@ -20,6 +20,8 @@ import com.detica.cyberreveal.storm.bolt.WordCountBolt;
 import com.detica.cyberreveal.storm.bolt.WordSplitBolt;
 import com.detica.cyberreveal.storm.spout.BookLineSpout;
 
+import backtype.storm.tuple.Fields;
+
 /**
  * The Class TestTopology.
  */
@@ -48,13 +50,17 @@ public final class BookTopology implements Runnable {
 	public void run() {
 		TopologyBuilder builder = new TopologyBuilder();
 
-		builder.setSpout("line", new BookLineSpout(), 2);
+		builder.setSpout("line", new BookLineSpout(), 1);
+
 		builder.setBolt("wordSplitter", new WordSplitBolt(), 2)
 				.shuffleGrouping("line");
-		builder.setBolt("wordCount", new WordCountBolt(), 2).shuffleGrouping(
-				"wordSplitter");
+		builder.setBolt("wordCount", new WordCountBolt(), 2)
+				.fieldsGrouping("wordSplitter", new Fields("word"));
+
+		//we need the words to be counted only once, so we specify where are they coming from
 		builder.setBolt("printWordCount", new PrinterBolt(), 2)
-				.shuffleGrouping("wordCount");
+				.fieldsGrouping("wordCount", new Fields("word", "count"));
+//				.shuffleGrouping("wordCount");
 		try {
 			builder.setBolt("printWordCountToFile",
 					new FilePrinterBolt(this.wordCountOutputFile), 2)
@@ -73,7 +79,7 @@ public final class BookTopology implements Runnable {
 				StormSubmitter.submitTopology(this.topologyName, conf,
 						builder.createTopology());
 			} catch (AlreadyAliveException e) {
-				LOG.error("Error submitting topology");
+				LOG.error("Error submitting topology"); //needs better description of the exception
 			} catch (InvalidTopologyException e) {
 				LOG.error("Error submitting topology", e);
 			}
@@ -81,7 +87,7 @@ public final class BookTopology implements Runnable {
 
 			LocalCluster cluster = new LocalCluster();
 			cluster.submitTopology("test", conf, builder.createTopology());
-			Utils.sleep(10000);
+			Utils.sleep(50000); // need more time
 			cluster.killTopology("test");
 			cluster.shutdown();
 		}
