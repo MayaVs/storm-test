@@ -54,13 +54,13 @@ public final class BookTopology implements Runnable {
 
 		builder.setBolt("wordSplitter", new WordSplitBolt(), 2)
 				.shuffleGrouping("line");
+
+		//we need to count the same words in the same task, so we use grouping by fields
 		builder.setBolt("wordCount", new WordCountBolt(), 2)
 				.fieldsGrouping("wordSplitter", new Fields("word"));
 
-		//we need the words to be counted only once, so we specify where are they coming from
 		builder.setBolt("printWordCount", new PrinterBolt(), 2)
-				.fieldsGrouping("wordCount", new Fields("word", "count"));
-//				.shuffleGrouping("wordCount");
+				.shuffleGrouping("wordCount");
 		try {
 			builder.setBolt("printWordCountToFile",
 					new FilePrinterBolt(this.wordCountOutputFile), 2)
@@ -87,7 +87,7 @@ public final class BookTopology implements Runnable {
 
 			LocalCluster cluster = new LocalCluster();
 			cluster.submitTopology("test", conf, builder.createTopology());
-			Utils.sleep(50000); // need more time
+			Utils.sleep(60000); // need more time
 			cluster.killTopology("test");
 			cluster.shutdown();
 		}
