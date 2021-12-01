@@ -20,7 +20,8 @@ public class WordSplitBolt extends BaseBasicBolt {
 		// split line by whitespace and punctuation characters
 		//might split better, should check requirements. Problems with 's or //www
 		String[] words = line
-				.split("\\s|[\\.,\\?!:;'\"�$%^&\\*\\(\\)\\-\\=\\_\\+\\[\\]\\{\\}@\\#\\~\\>\\<]");
+				//.split("\\s|[\\.,\\?!:;'\"�$%^&\\*\\(\\)\\-\\=\\_\\+\\[\\]\\{\\}@\\#\\~\\>\\<]");
+				.split("\\W+");
 		for (int i = 0; i < words.length; i++) {
 			String word = words[i].toLowerCase().trim();
 			if (word.length() > 0) {

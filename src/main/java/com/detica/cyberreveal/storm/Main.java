@@ -41,9 +41,10 @@ public final class Main {
 			topologyName = args[0];
 		}
 		BookTopology topology = new BookTopology(topologyName,
-				"src/main/resources/AdventuresOfSherlockHolmes.txt", new File(
-						"target/wordCounts.out"));
-			topology.run();
+				"src/main/resources/AdventuresOfSherlockHolmes.txt", //file to read input from
+				new File("target/wordCounts.out"), //file to write all words and how many times are counted in the text live during the topology runs
+				new File("target/filterLinesWithCrimeWords.out")); //file to write lines that contain special crime words from filter list
 
+			topology.run();
 	}
 }

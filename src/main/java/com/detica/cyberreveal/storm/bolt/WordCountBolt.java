@@ -21,6 +21,7 @@ public class WordCountBolt extends BaseBasicBolt {
 
 	@Override
 	public void execute(final Tuple tuple, final BasicOutputCollector collector) {
+
 		String word = tuple.getStringByField("word");
 		Long wordCount = this.wordCounts.get(word);
 		// If word has not been seen before, add it to the map

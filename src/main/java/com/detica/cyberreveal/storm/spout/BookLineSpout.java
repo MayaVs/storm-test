@@ -16,7 +16,7 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 
 /**
- * A storm spout which reads a file and outputs each line to a spearate tuple.
+ * A storm spout which reads a file and outputs each line to a separate tuple.
  */
 public class BookLineSpout extends BaseRichSpout {
 
@@ -30,13 +30,13 @@ public class BookLineSpout extends BaseRichSpout {
 			final SpoutOutputCollector spoutCollector) {
 		this.lines = new ArrayList<String>();
 		this.collector = spoutCollector;
-		// Read input file, one line at a time, and add each line to a list
 		File inputFile = new File((String) conf.get("inputFile"));
 		try {
 			FileReader inStream = new FileReader(inputFile);
 			try {
 				BufferedReader buff = new BufferedReader(inStream);
 				try {
+					// Read input file, one line at a time, and add each line to a list
 					String line = buff.readLine();
 					while (line != null) {
 						this.lines.add(line);
