@@ -12,7 +12,7 @@ import backtype.storm.topology.base.BaseBasicBolt;
 import backtype.storm.tuple.Tuple;
 
 /**
- * a Storm Bolt which appends all recieved tuples to a specified file.
+ * a Storm Bolt which appends all received tuples to a specified file.
  */
 public class FilePrinterBolt extends BaseBasicBolt {
 
